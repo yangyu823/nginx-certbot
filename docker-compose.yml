@@ -11,10 +11,13 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_DB: postgres
+    networks:
+      - PactBroker-network
 
   pact-broker:
     image: dius/pact-broker
     # build: .
+    container_name: PactBroker
     expose:
       - 80
     depends_on:
@@ -29,6 +32,9 @@ services:
       PACT_BROKER_BASE_URL: "https://yyan.io"
       PACT_BROKER_BASIC_AUTH_USERNAME: CSPUsr2
       PACT_BROKER_BASIC_AUTH_PASSWORD: Password1
+    networks:
+      - PactBroker-network
+
   nginx:
     image: nginx:alpine
     restart: unless-stopped
@@ -39,6 +45,8 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    networks:
+      - PactBroker-network
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
   certbot:
     image: certbot/certbot
@@ -47,3 +55,6 @@ services:
       - ./data/certbot/conf:/etc/letsencrypt
       - ./data/certbot/www:/var/www/certbot
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+networks:
+  - PactBroker-network
