@@ -20,7 +20,7 @@ services:
     container_name: PactBroker
     expose:
       - 80
-      - 443
+      - 9292
     depends_on:
       - postgres
     environment:
