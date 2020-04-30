@@ -1,1 +1,7 @@
 /data/certbot
+.idea/.gitignore
+.idea/inspectionProfiles/
+.idea/misc.xml
+.idea/modules.xml
+.idea/nginx-certbot.iml
+.idea/vcs.xml
