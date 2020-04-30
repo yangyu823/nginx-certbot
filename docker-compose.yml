@@ -1,6 +1,34 @@
 version: '3'
 
 services:
+  postgres:
+    image: postgres
+    healthcheck:
+      test: psql postgres --command "select 1" -U postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgres
+
+  pact-broker:
+    image: dius/pact-broker
+    # build: .
+    expose:
+      - 80
+    depends_on:
+      - postgres
+    environment:
+      PACT_BROKER_DATABASE_USERNAME: postgres
+      PACT_BROKER_DATABASE_PASSWORD: password
+      PACT_BROKER_DATABASE_HOST: postgres
+      PACT_BROKER_DATABASE_NAME: postgres
+      PACT_BROKER_LOG_LEVEL: INFO
+      #      PACT_BROKER_PORT: "9292"
+      PACT_BROKER_BASE_URL: "https://yyan.io"
+      PACT_BROKER_BASIC_AUTH_USERNAME: CSPUsr2
+      PACT_BROKER_BASIC_AUTH_PASSWORD: Password1
   nginx:
     image: nginx:alpine
     restart: unless-stopped
